@@ -11,7 +11,6 @@ The **GraphRangeSlider** is a SwiftUI native component that displays a graph whi
 ## Usage
 
 ### Initialization
----
 
 To build the view, you need to create a model that conforms to `GraphRangeElement`. In this protocol, `x` will be used to represent the values on the horizontal axis of the graph, while `y` will represent the values on the vertical axis.
 
