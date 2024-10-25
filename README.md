@@ -48,10 +48,10 @@ struct ContentView: View {
 ### UI Customization
 - Width of the bar graph
 
-The width of the graph is determined by a percentage.
-This setting value is equivalent to the `MarkDimension.ratio` on SwiftCharts.
+You can set the dimension of the graph.
+This setting value is equivalent to the `MarkDimension` on SwiftCharts.
 ```swift
-.graph(barWidthRatio: 0.5)
+.graph(width: .ratio(0.5), height: .automatic)
 ```
 
 - Inactive color
