@@ -16,7 +16,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @State private var leftCurrentIndex = 0
     @State private var rightCurrentIndex = 0
     @State private var positions = ContiguousArray<CGFloat>()
-    @Environment(\.graphBarWidth) private var graphBarWidth: CGFloat
+    @Environment(\.graphDimension) private var graphDimension: EnvironmentValues.BarDimension
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.inactiveColor) private var inactiveColor: Color
     @Environment(\.toggleRadius) private var toggleRadius: CGFloat
@@ -28,7 +28,8 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                     BarMark(
                         x: .value(PlottableKeys.x, String(describing: data.x)),
                         y: .value(PlottableKeys.y, data.y),
-                        width: .ratio(graphBarWidth)
+                        width: graphDimension.width,
+                        height: graphDimension.height
                     )
                     .foregroundStyle(
                         by: .value(

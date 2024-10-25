@@ -17,7 +17,7 @@ struct ContentView: View {
             id: \.x,
             selectedData: $selectedData
         )
-//        .graph(barWidthRatio: 0.5)
+//        .graph(width: .ratio(0.8), height: .fixed(50))
 //        .inactiveColor(Color.gray.opacity(0.8))
 //        .activeColor(Color.blue)
 //        .slider(toggleRadius: 6)
