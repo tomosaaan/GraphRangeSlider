@@ -5,7 +5,7 @@ struct SliderToggle: View {
         case left, right
     }
 
-    let togglePositions: [CGFloat]
+    let togglePositions: ContiguousArray<CGFloat>
     let limitIndex: Int
     @Binding var currentIndex: Int
     @Environment(\.activeColor) private var activeColor: Color
@@ -31,23 +31,16 @@ struct SliderToggle: View {
             .gesture(
                 DragGesture()
                     .onChanged { value in
-                        let nextIndex = min(currentIndex + 1, togglePositions.endIndex - 1)
-                        let previousIndex = max(currentIndex - 1, 0)
-
                         switch position {
                         case .left:
                             let locationX = value.location.x - toggleRadius
-                            if togglePositions[nextIndex] < locationX {
-                                currentIndex = min(nextIndex, limitIndex - 1)
-                            } else if locationX < togglePositions[previousIndex] {
-                                currentIndex = previousIndex
+                            if let index = togglePositions.map { abs($0 - locationX) }.argmin() {
+                                currentIndex = min(index, limitIndex - 1)
                             }
                         case .right:
                             let locationX = value.location.x + toggleRadius * 3
-                            if togglePositions[nextIndex] < locationX {
-                                currentIndex = nextIndex
-                            } else if locationX < togglePositions[previousIndex] {
-                                currentIndex = max(previousIndex, limitIndex + 1)
+                            if let index = togglePositions.map { abs($0 - locationX) }.argmin() {
+                                currentIndex = max(index, limitIndex + 1)
                             }
                         }
                     }

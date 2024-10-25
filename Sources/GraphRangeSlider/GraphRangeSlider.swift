@@ -15,7 +15,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Binding private var selectedData: Data
     @State private var leftCurrentIndex = 0
     @State private var rightCurrentIndex = 0
-    @State private var positions = [CGFloat]()
+    @State private var positions = ContiguousArray<CGFloat>()
     @Environment(\.graphBarWidth) private var graphBarWidth: CGFloat
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.inactiveColor) private var inactiveColor: Color

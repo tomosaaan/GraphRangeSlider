@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct Slider: View {
-    let positions: [CGFloat]
+    let positions: ContiguousArray<CGFloat>
     @Binding var leftCurrentIndex: Int
     @Binding var rightCurrentIndex: Int
     @State private var viewSize = CGSize.zero

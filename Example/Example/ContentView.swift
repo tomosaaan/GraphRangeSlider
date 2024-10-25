@@ -7,15 +7,7 @@ struct Element: GraphRangeElement {
 }
 
 struct ContentView: View {
-    let data: [Element] = [
-        .init(x: 10, y: 10),
-        .init(x: 20, y: 20),
-        .init(x: 30, y: 30),
-        .init(x: 40, y: 40),
-        .init(x: 50, y: 50),
-        .init(x: 60, y: 60),
-        .init(x: 70, y: 70),
-    ]
+    let data: [Element] = (1...50).map { .init(x: $0 * 10, y: $0 * 10) }
 
     @State var selectedData = [Element]()
 
