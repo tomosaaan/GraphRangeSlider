@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 public extension View {
     /// Sets the selected color
@@ -17,10 +18,11 @@ public extension View {
 
     /// Sets the width of the bars in the graph as a percentage
     ///
-    /// - Parameter barWidthRatio: Ratio of the bar to the range that can be drawn, defaults to `0.8`
+    /// - Parameter width: Dimension representing a mark’s width, defaults to `.automatic`
+    /// - Parameter height: Dimension representing a mark’s height, defaults to `.automatic`
     /// - Note: This setting value is equivalent to the `MarkDimension.ratio` on Swift Charts.
-    public func graph(barWidthRatio: CGFloat) -> some View {
-        environment(\.graphBarWidth, max(min(barWidthRatio, 1), 0))
+    public func graph(width: MarkDimension = .automatic, height: MarkDimension = .automatic) -> some View {
+        environment(\.graphDimension, .init(width: width, height: height))
     }
 
     /// Sets the toggle radius
