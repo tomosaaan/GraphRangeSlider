@@ -85,7 +85,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                         0
                     }
                     rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
-                        selectedIndex
+                        selectedIndex + 1
                     } else {
                         positions.count - 1
                     }
