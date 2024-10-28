@@ -79,12 +79,12 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                 if !positions.isEmpty {
                     positions[0] = 0
                     positions[positions.count - 1] += toggleRadius
-                    leftCurrentIndex = if let selectedIndex = data.firstIndex(of: selectedData[0]) {
+                    leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
                         selectedIndex
                     } else {
                         0
                     }
-                    rightCurrentIndex = if let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
+                    rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
                         selectedIndex
                     } else {
                         positions.count - 1
