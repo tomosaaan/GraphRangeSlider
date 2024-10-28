@@ -38,4 +38,11 @@ public extension View {
     public func slider(barHeight: CGFloat) -> some View {
         environment(\.sliderBarHeight, barHeight)
     }
+
+    /// Sets the margin for graphs and slide bars
+    ///
+    /// - Parameter value: graph and slide bar margins, defaults to `0`
+    public func margin(_ value: CGFloat) -> some View {
+        environment(\.margin, max(value, 0))
+    }
 }
