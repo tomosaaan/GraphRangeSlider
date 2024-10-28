@@ -25,7 +25,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.margin) private var margin: CGFloat
 
     public var body: some View {
-        GeometryReader { reader in
+        GeometryReader { geometry in
             Chart(data, id: id) { data in
                 BarMark(
                     x: .value(PlottableKeys.x, String(describing: data.x)),
@@ -66,8 +66,8 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
             .onChange(of: rightCurrentIndex) { _ in
                 onChangedSelectedData()
             }
-            .onAppear {
-                let width = reader.size.width - toggleRadius * 4
+            .task(id: geometry.size.width) {
+                let width = geometry.size.width - toggleRadius * 4
                 let barMarkWidth = width / CGFloat(data.count)
 
                 positions = .init(
@@ -76,19 +76,18 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                            by: barMarkWidth)
                 )
 
-                if !positions.isEmpty {
-                    positions[0] = 0
-                    positions[positions.count - 1] += toggleRadius
-                    leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
-                        selectedIndex
-                    } else {
-                        0
-                    }
-                    rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
-                        selectedIndex + 1
-                    } else {
-                        positions.count - 1
-                    }
+                positions[0] = 0
+                positions[positions.count - 1] += toggleRadius
+
+                leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
+                    selectedIndex
+                } else {
+                    0
+                }
+                rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
+                    selectedIndex + 1
+                } else {
+                    positions.count - 1
                 }
             }
         }
