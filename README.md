@@ -89,6 +89,21 @@ You can set the margin for slider and graph.
 .margin(4)
 ```
 
+- Delegate functions
+
+Called when the slider range changes.
+```swift
+.onChanged { data in
+  // handler
+}
+```
+Called when the drag ends.
+```swift
+.onEnded { data in
+  // handler
+}
+```
+
 <img src='docs/graph.png' width=300 />
 
 ## Requirements

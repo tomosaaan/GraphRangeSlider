@@ -7,6 +7,7 @@ struct SliderToggle: View {
 
     let togglePositions: ContiguousArray<CGFloat>
     let limitIndex: Int
+    @Binding var isDragging: Bool
     @Binding var currentIndex: Int
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.toggleRadius) private var toggleRadius: CGFloat
@@ -31,6 +32,7 @@ struct SliderToggle: View {
             .gesture(
                 DragGesture()
                     .onChanged { value in
+                        isDragging = true
                         switch position {
                         case .left:
                             let locationX = value.location.x - toggleRadius
@@ -43,6 +45,9 @@ struct SliderToggle: View {
                                 currentIndex = max(index, limitIndex + 1)
                             }
                         }
+                    }
+                    .onEnded { _ in
+                        isDragging = false
                     }
             )
     }

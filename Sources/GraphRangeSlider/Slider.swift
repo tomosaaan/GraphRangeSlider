@@ -2,10 +2,13 @@ import SwiftUI
 
 struct Slider: View {
     let positions: ContiguousArray<CGFloat>
+    let onEnded: () -> Void
     @Binding var leftCurrentIndex: Int
     @Binding var rightCurrentIndex: Int
     @State private var viewSize = CGSize.zero
     @State private var width = CGFloat.zero
+    @State private var isLeftToggleDragging = false
+    @State private var isRightToggleDragging = false
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.inactiveColor) private var inactiveColor: Color
     @Environment(\.toggleRadius) private var toggleRadius: CGFloat
@@ -34,13 +37,22 @@ struct Slider: View {
                     SliderToggle(
                         togglePositions: positions,
                         limitIndex: rightCurrentIndex,
+                        isDragging: $isRightToggleDragging,
                         currentIndex: $leftCurrentIndex
                     )
+                    .disabled(isLeftToggleDragging)
                     SliderToggle(
                         togglePositions: positions,
                         limitIndex: leftCurrentIndex,
+                        isDragging: $isLeftToggleDragging,
                         currentIndex: $rightCurrentIndex
                     )
+                    .disabled(isRightToggleDragging)
+                }
+            }
+            .onChange(of: isLeftToggleDragging || isRightToggleDragging) { isDragging in
+                if !isDragging {
+                    onEnded()
                 }
             }
         }
