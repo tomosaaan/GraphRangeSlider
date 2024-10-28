@@ -11,4 +11,5 @@ extension EnvironmentValues {
     @Entry var graphDimension = BarDimension(width: .automatic, height: .automatic)
     @Entry var toggleRadius: CGFloat = 8
     @Entry var sliderBarHeight: CGFloat = 8
+    @Entry var margin: CGFloat = 0
 }

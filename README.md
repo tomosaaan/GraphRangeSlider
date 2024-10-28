@@ -82,6 +82,13 @@ You can set the height of the slider's track.
 .slider(barHeight: 4)
 ```
 
+- Slider and graph margin
+
+You can set the margin for slider and graph.
+```swift
+.margin(4)
+```
+
 <img src='docs/graph.png' width=300 />
 
 ## Requirements

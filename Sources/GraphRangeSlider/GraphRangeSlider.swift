@@ -20,39 +20,42 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.inactiveColor) private var inactiveColor: Color
     @Environment(\.toggleRadius) private var toggleRadius: CGFloat
+    @Environment(\.sliderBarHeight) private var sliderBarHeight: CGFloat
+    @Environment(\.margin) private var margin: CGFloat
 
     public var body: some View {
         GeometryReader { reader in
-            VStack {
-                Chart(data, id: id) { data in
-                    BarMark(
-                        x: .value(PlottableKeys.x, String(describing: data.x)),
-                        y: .value(PlottableKeys.y, data.y),
-                        width: graphDimension.width,
-                        height: graphDimension.height
+            Chart(data, id: id) { data in
+                BarMark(
+                    x: .value(PlottableKeys.x, String(describing: data.x)),
+                    y: .value(PlottableKeys.y, data.y),
+                    width: graphDimension.width,
+                    height: graphDimension.height
+                )
+                .foregroundStyle(
+                    by: .value(
+                        PlottableKeys.status,
+                        selectedData.contains(data) ? Status.active: Status.inactive
                     )
-                    .foregroundStyle(
-                        by: .value(
-                            PlottableKeys.status,
-                            selectedData.contains(data) ? Status.active: Status.inactive
-                        )
-                    )
-                }
-                .padding(.horizontal, toggleRadius)
-                .chartXAxis(.hidden)
-                .chartYAxis(.hidden)
-                .chartLegend(.hidden)
-                .chartForegroundStyleScale([
-                    Status.active: activeColor,
-                    Status.inactive: inactiveColor
-                ])
-
+                )
+            }
+            .padding(.horizontal, toggleRadius * 2)
+            .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
+            .chartXAxis(.hidden)
+            .chartYAxis(.hidden)
+            .chartLegend(.hidden)
+            .chartForegroundStyleScale([
+                Status.active: activeColor,
+                Status.inactive: inactiveColor
+            ])
+            .overlay(alignment: .bottom) {
                 if !positions.isEmpty {
                     Slider(
                         positions: positions,
                         leftCurrentIndex: $leftCurrentIndex,
                         rightCurrentIndex: $rightCurrentIndex
                     )
+                    .frame(height: toggleRadius * 2)
                 }
             }
             .onChange(of: leftCurrentIndex) { _ in
@@ -62,17 +65,19 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                 onChangedSelectedData()
             }
             .onAppear {
-                let width = reader.size.width - toggleRadius * 2
+                let width = reader.size.width - toggleRadius * 4
                 let barMarkWidth = width / CGFloat(data.count)
 
                 positions = .init(
-                    stride(from: 0,
-                           through: barMarkWidth * CGFloat(data.count),
+                    stride(from: toggleRadius,
+                           through: barMarkWidth * CGFloat(data.count) + toggleRadius,
                            by: barMarkWidth)
                 )
                 if !positions.isEmpty {
                     leftCurrentIndex = 0
                     rightCurrentIndex = positions.count - 1
+                    positions[leftCurrentIndex] = 0
+                    positions[rightCurrentIndex] += toggleRadius
                 }
             }
         }
