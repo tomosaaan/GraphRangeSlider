@@ -66,7 +66,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
             .onChange(of: rightCurrentIndex) { _ in
                 onChangedSelectedData()
             }
-            .onAppear {
+            .task(id: geometry.size.width) {
                 let width = geometry.size.width - toggleRadius * 4
                 let barMarkWidth = width / CGFloat(data.count)
 
