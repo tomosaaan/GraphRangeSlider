@@ -25,76 +25,72 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.margin) private var margin: CGFloat
 
     public var body: some View {
-        Chart(data, id: id) { data in
-            BarMark(
-                x: .value(PlottableKeys.x, String(describing: data.x)),
-                y: .value(PlottableKeys.y, data.y),
-                width: graphDimension.width,
-                height: graphDimension.height
-            )
-            .foregroundStyle(
-                by: .value(
-                    PlottableKeys.status,
-                    selectedData.contains(data) ? Status.active: Status.inactive
+        GeometryReader { geometry in
+            Chart(data, id: id) { data in
+                BarMark(
+                    x: .value(PlottableKeys.x, String(describing: data.x)),
+                    y: .value(PlottableKeys.y, data.y),
+                    width: graphDimension.width,
+                    height: graphDimension.height
                 )
-            )
-        }
-        .padding(.horizontal, toggleRadius * 2)
-        .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
-        .chartXAxis(.hidden)
-        .chartYAxis(.hidden)
-        .chartLegend(.hidden)
-        .chartForegroundStyleScale([
-            Status.active: activeColor,
-            Status.inactive: inactiveColor
-        ])
-        .overlay(alignment: .bottom) {
-            if !positions.isEmpty {
-                Slider(
-                    positions: positions,
-                    onEnded: { builder.onEnded.call(selectedData) },
-                    leftCurrentIndex: $leftCurrentIndex,
-                    rightCurrentIndex: $rightCurrentIndex
+                .foregroundStyle(
+                    by: .value(
+                        PlottableKeys.status,
+                        selectedData.contains(data) ? Status.active: Status.inactive
+                    )
                 )
-                .frame(height: toggleRadius * 2)
+            }
+            .padding(.horizontal, toggleRadius * 2)
+            .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
+            .chartXAxis(.hidden)
+            .chartYAxis(.hidden)
+            .chartLegend(.hidden)
+            .chartForegroundStyleScale([
+                Status.active: activeColor,
+                Status.inactive: inactiveColor
+            ])
+            .overlay(alignment: .bottom) {
+                if !positions.isEmpty {
+                    Slider(
+                        positions: positions,
+                        onEnded: { builder.onEnded.call(selectedData) },
+                        leftCurrentIndex: $leftCurrentIndex,
+                        rightCurrentIndex: $rightCurrentIndex
+                    )
+                    .frame(height: toggleRadius * 2)
+                }
+            }
+            .onChange(of: leftCurrentIndex) { _ in
+                onChangedSelectedData()
+            }
+            .onChange(of: rightCurrentIndex) { _ in
+                onChangedSelectedData()
+            }
+            .onAppear {
+                let width = geometry.size.width - toggleRadius * 4
+                let barMarkWidth = width / CGFloat(data.count)
+
+                positions = .init(
+                    stride(from: toggleRadius,
+                           through: barMarkWidth * CGFloat(data.count) + toggleRadius,
+                           by: barMarkWidth)
+                )
+
+                positions[0] = 0
+                positions[positions.count - 1] += toggleRadius
+
+                leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
+                    selectedIndex
+                } else {
+                    0
+                }
+                rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
+                    selectedIndex + 1
+                } else {
+                    positions.count - 1
+                }
             }
         }
-        .onChange(of: leftCurrentIndex) { _ in
-            onChangedSelectedData()
-        }
-        .onChange(of: rightCurrentIndex) { _ in
-            onChangedSelectedData()
-        }
-        .background(
-            GeometryReader { reader in
-                Color.clear
-                    .onAppear {
-                        print(reader.size.width)
-                        let width = reader.size.width - toggleRadius * 4
-                        let barMarkWidth = width / CGFloat(data.count)
-
-                        positions = .init(
-                            stride(from: toggleRadius,
-                                   through: barMarkWidth * CGFloat(data.count) + toggleRadius,
-                                   by: barMarkWidth)
-                        )
-
-                        positions[0] = 0
-                        positions[positions.count - 1] += toggleRadius
-
-                        leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
-                            selectedIndex
-                        } else {
-                            0
-                        }
-                        rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
-                            selectedIndex + 1
-                        } else {
-                            positions.count - 1
-                        }
-                    }
-            }
-        )
     }
 
     private func onChangedSelectedData() {
