@@ -76,19 +76,18 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                            by: barMarkWidth)
                 )
 
-                if !positions.isEmpty {
-                    positions[0] = 0
-                    positions[positions.count - 1] += toggleRadius
-                    leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
-                        selectedIndex
-                    } else {
-                        0
-                    }
-                    rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
-                        selectedIndex + 1
-                    } else {
-                        positions.count - 1
-                    }
+                positions[0] = 0
+                positions[positions.count - 1] += toggleRadius
+
+                leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
+                    selectedIndex
+                } else {
+                    0
+                }
+                rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
+                    selectedIndex + 1
+                } else {
+                    positions.count - 1
                 }
             }
         }
