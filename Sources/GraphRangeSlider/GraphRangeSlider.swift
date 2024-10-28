@@ -12,6 +12,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
 
     private let data: Data
     private let id: KeyPath<Data.Element, ID>
+    private let builder = GraphRangeSliderBuilder()
     @Binding private var selectedData: Data
     @State private var leftCurrentIndex = 0
     @State private var rightCurrentIndex = 0
@@ -52,6 +53,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                 if !positions.isEmpty {
                     Slider(
                         positions: positions,
+                        onEnded: { builder.onEnded.call(selectedData) },
                         leftCurrentIndex: $leftCurrentIndex,
                         rightCurrentIndex: $rightCurrentIndex
                     )
@@ -87,7 +89,26 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
         let selectedIndexRange = leftCurrentIndex ..< rightCurrentIndex
         if let selectedData = Array(data[selectedIndexRange]) as? Data {
             self.selectedData = selectedData
+            builder.onChanged.call(selectedData)
         }
+    }
+}
+
+extension GraphRangeSlider {
+    @MainActor
+    private final class GraphRangeSliderBuilder: GraphRangeSliderDelegate {
+        let onChanged = Delegate<Data, Void>()
+        let onEnded = Delegate<Data, Void>()
+    }
+
+    public func onChanged(_ action: @escaping (Data) -> Void) -> Self {
+        builder.onChanged.set(action)
+        return self
+    }
+
+    public func onEnded(_ action: @escaping (Data) -> Void) -> Self {
+        builder.onEnded.set(action)
+        return self
     }
 }
 
