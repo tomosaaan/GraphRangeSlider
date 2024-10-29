@@ -27,7 +27,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
 
     public var body: some View {
         ZStack {
-            Color.clear.viewSize { width = $0.width }
+            Color.clear.frame(height: 1).viewSize { width = $0.width }
             Chart(data, id: id) { data in
                 BarMark(
                     x: .value(PlottableKeys.x, String(describing: data.x)),
