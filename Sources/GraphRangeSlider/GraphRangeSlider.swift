@@ -49,13 +49,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
             Status.active: activeColor,
             Status.inactive: inactiveColor
         ])
-        .background(
-            GeometryReader { geometry in
-                Color.clear.task(id: geometry.size.width) {
-                    width = geometry.size.width
-                }
-            }
-        )
+        .viewSize { width = $0.width }
         .overlay(alignment: .bottom) {
             if !positions.isEmpty {
                 Slider(
