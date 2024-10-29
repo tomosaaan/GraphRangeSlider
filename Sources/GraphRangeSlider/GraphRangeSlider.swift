@@ -26,57 +26,57 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.margin) private var margin: CGFloat
 
     public var body: some View {
-        ZStack {
-            Color.clear.frame(height: 1).viewSize { width = $0.width }
-            Chart(data, id: id) { data in
-                BarMark(
-                    x: .value(PlottableKeys.x, String(describing: data.x)),
-                    y: .value(PlottableKeys.y, data.y),
-                    width: graphDimension.width,
-                    height: graphDimension.height
+        Chart(data, id: id) { data in
+            BarMark(
+                x: .value(PlottableKeys.x, String(describing: data.x)),
+                y: .value(PlottableKeys.y, data.y),
+                width: graphDimension.width,
+                height: graphDimension.height
+            )
+            .foregroundStyle(
+                by: .value(
+                    PlottableKeys.status,
+                    selectedData.contains(data) ? Status.active: Status.inactive
                 )
-                .foregroundStyle(
-                    by: .value(
-                        PlottableKeys.status,
-                        selectedData.contains(data) ? Status.active: Status.inactive
-                    )
+            )
+        }
+        .padding(.horizontal, toggleRadius * 2)
+        .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartLegend(.hidden)
+        .chartForegroundStyleScale([
+            Status.active: activeColor,
+            Status.inactive: inactiveColor
+        ])
+        .background(
+            Color.clear.viewSize { width = $0.width }
+        )
+        .overlay(alignment: .bottom) {
+            if !positions.isEmpty {
+                Slider(
+                    positions: positions,
+                    onEnded: { builder.onEnded.call(selectedData) },
+                    leftCurrentIndex: $leftCurrentIndex,
+                    rightCurrentIndex: $rightCurrentIndex
                 )
-            }
-            .padding(.horizontal, toggleRadius * 2)
-            .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartLegend(.hidden)
-            .chartForegroundStyleScale([
-                Status.active: activeColor,
-                Status.inactive: inactiveColor
-            ])
-            .overlay(alignment: .bottom) {
-                if !positions.isEmpty {
-                    Slider(
-                        positions: positions,
-                        onEnded: { builder.onEnded.call(selectedData) },
-                        leftCurrentIndex: $leftCurrentIndex,
-                        rightCurrentIndex: $rightCurrentIndex
-                    )
-                    .frame(height: toggleRadius * 2)
-                }
-            }
-            .onChange(of: leftCurrentIndex) { _ in
-                onChangedSelectedData()
-            }
-            .onChange(of: rightCurrentIndex) { _ in
-                onChangedSelectedData()
-            }
-            .task(id: data.count) {
-                updatePositions()
-                updateIndices()
+                .frame(height: toggleRadius * 2)
             }
         }
-//        .task(id: width) {
-//            updatePositions()
-//            updateIndices()
-//        }
+        .onChange(of: leftCurrentIndex) { _ in
+            onChangedSelectedData()
+        }
+        .onChange(of: rightCurrentIndex) { _ in
+            onChangedSelectedData()
+        }
+        .task(id: data.count) {
+            updatePositions()
+            updateIndices()
+        }
+        .task(id: width) {
+            updatePositions()
+            updateIndices()
+        }
     }
 
     private func onChangedSelectedData() {
