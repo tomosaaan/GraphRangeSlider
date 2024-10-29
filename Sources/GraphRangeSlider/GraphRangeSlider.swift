@@ -18,6 +18,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @State private var rightCurrentIndex = 0
     @State private var positions = ContiguousArray<CGFloat>()
     @State private var width = CGFloat.zero
+    @State private var layoutID = UUID()
     @Environment(\.graphDimension) private var graphDimension: EnvironmentValues.BarDimension
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.inactiveColor) private var inactiveColor: Color
@@ -67,7 +68,13 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
         .onChange(of: rightCurrentIndex) { _ in
             onChangedSelectedData()
         }
-        .task(id: data.count) {
+        .onChange(of: data.count) { _ in
+            layoutID = .init()
+        }
+        .onChange(of: width) { _ in
+            layoutID = .init()
+        }
+        .task(id: layoutID) {
             updatePositions()
             updateIndices()
         }
