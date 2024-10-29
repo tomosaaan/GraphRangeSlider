@@ -51,7 +51,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
         ])
         .background(
             GeometryReader { geometry in
-                Color.clear.onAppear {
+                Color.clear.task(id: geometry.size.width) {
                     width = geometry.size.width
                 }
             }
