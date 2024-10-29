@@ -17,6 +17,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @State private var leftCurrentIndex = 0
     @State private var rightCurrentIndex = 0
     @State private var positions = ContiguousArray<CGFloat>()
+    @State private var width = CGFloat.zero
     @Environment(\.graphDimension) private var graphDimension: EnvironmentValues.BarDimension
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.inactiveColor) private var inactiveColor: Color
@@ -25,80 +26,92 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.margin) private var margin: CGFloat
 
     public var body: some View {
-        GeometryReader { geometry in
-            Chart(data, id: id) { data in
-                BarMark(
-                    x: .value(PlottableKeys.x, String(describing: data.x)),
-                    y: .value(PlottableKeys.y, data.y),
-                    width: graphDimension.width,
-                    height: graphDimension.height
+        Chart(data, id: id) { data in
+            BarMark(
+                x: .value(PlottableKeys.x, String(describing: data.x)),
+                y: .value(PlottableKeys.y, data.y),
+                width: graphDimension.width,
+                height: graphDimension.height
+            )
+            .foregroundStyle(
+                by: .value(
+                    PlottableKeys.status,
+                    selectedData.contains(data) ? Status.active: Status.inactive
                 )
-                .foregroundStyle(
-                    by: .value(
-                        PlottableKeys.status,
-                        selectedData.contains(data) ? Status.active: Status.inactive
-                    )
+            )
+        }
+        .padding(.horizontal, toggleRadius * 2)
+        .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartLegend(.hidden)
+        .chartForegroundStyleScale([
+            Status.active: activeColor,
+            Status.inactive: inactiveColor
+        ])
+        .background(
+            Color.clear.viewSize { width = $0.width }
+        )
+        .overlay(alignment: .bottom) {
+            if !positions.isEmpty {
+                Slider(
+                    positions: positions,
+                    onEnded: { builder.onEnded.call(selectedData) },
+                    leftCurrentIndex: $leftCurrentIndex,
+                    rightCurrentIndex: $rightCurrentIndex
                 )
+                .frame(height: toggleRadius * 2)
             }
-            .padding(.horizontal, toggleRadius * 2)
-            .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartLegend(.hidden)
-            .chartForegroundStyleScale([
-                Status.active: activeColor,
-                Status.inactive: inactiveColor
-            ])
-            .overlay(alignment: .bottom) {
-                if !positions.isEmpty {
-                    Slider(
-                        positions: positions,
-                        onEnded: { builder.onEnded.call(selectedData) },
-                        leftCurrentIndex: $leftCurrentIndex,
-                        rightCurrentIndex: $rightCurrentIndex
-                    )
-                    .frame(height: toggleRadius * 2)
-                }
-            }
-            .onChange(of: leftCurrentIndex) { _ in
-                onChangedSelectedData()
-            }
-            .onChange(of: rightCurrentIndex) { _ in
-                onChangedSelectedData()
-            }
-            .task(id: geometry.size.width) {
-                let width = geometry.size.width - toggleRadius * 4
-                let barMarkWidth = width / CGFloat(data.count)
-
-                positions = .init(
-                    stride(from: toggleRadius,
-                           through: barMarkWidth * CGFloat(data.count) + toggleRadius,
-                           by: barMarkWidth)
-                )
-
-                positions[0] = 0
-                positions[positions.count - 1] += toggleRadius
-
-                leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
-                    selectedIndex
-                } else {
-                    0
-                }
-                rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
-                    selectedIndex + 1
-                } else {
-                    positions.count - 1
-                }
-            }
+        }
+        .onChange(of: leftCurrentIndex) { _ in
+            onChangedSelectedData()
+        }
+        .onChange(of: rightCurrentIndex) { _ in
+            onChangedSelectedData()
+        }
+        .task(id: Array(data)) {
+            updatePositions()
+            updateIndices()
+        }
+        .task(id: width) {
+            updatePositions()
+            updateIndices()
         }
     }
 
     private func onChangedSelectedData() {
-        let selectedIndexRange = leftCurrentIndex ..< rightCurrentIndex
-        if let selectedData = Array(data[selectedIndexRange]) as? Data {
+        let startIndex = min(leftCurrentIndex, data.endIndex)
+        let endIndex = min(rightCurrentIndex, data.endIndex)
+        if let selectedData = Array(data[startIndex ..< endIndex]) as? Data {
             self.selectedData = selectedData
             builder.onChanged.call(selectedData)
         }
+    }
+
+    private func updateIndices() {
+        leftCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[0]) {
+            selectedIndex
+        } else {
+            0
+        }
+        rightCurrentIndex = if !selectedData.isEmpty, let selectedIndex = data.firstIndex(of: selectedData[selectedData.count - 1]) {
+            selectedIndex + 1
+        } else {
+            positions.count - 1
+        }
+    }
+
+    private func updatePositions() {
+        let width = width - toggleRadius * 4
+        let barMarkWidth = width / CGFloat(data.count)
+
+        positions = .init(
+            stride(from: toggleRadius,
+                   through: barMarkWidth * CGFloat(data.count) + toggleRadius,
+                   by: barMarkWidth)
+        )
+        positions[0] = 0
+        positions[positions.count - 1] += toggleRadius
     }
 }
 
