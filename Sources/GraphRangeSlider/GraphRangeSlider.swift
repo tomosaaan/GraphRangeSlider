@@ -1,7 +1,7 @@
 import SwiftUI
 import Charts
 
-public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollection & Equatable, Data.Element: GraphRangeElement, Data.Index == Int, ID: Hashable {
+public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollection, Data.Element: GraphRangeElement, Data.Index == Int, ID: Hashable {
     private enum Status: String, Plottable {
         case active, inactive
     }
@@ -69,7 +69,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
         .onChange(of: rightCurrentIndex) { _ in
             onChangedSelectedData()
         }
-        .task(id: data) {
+        .task(id: Array(data)) {
             updatePositions()
             updateIndices()
         }
