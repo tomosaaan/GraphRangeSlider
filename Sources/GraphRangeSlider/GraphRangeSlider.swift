@@ -69,6 +69,9 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
         .onChange(of: rightCurrentIndex) { _ in
             onChangedSelectedData()
         }
+        .task(id: Array(selectedData)) {
+            updateIndices()
+        }
         .task(id: Array(data)) {
             updatePositions()
             updateIndices()
