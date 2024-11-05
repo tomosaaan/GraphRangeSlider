@@ -89,6 +89,13 @@ You can set the margin for slider and graph.
 .margin(4)
 ```
 
+- Minimum selectable count
+
+You can set the minimum number that can be selected.
+```swift
+.minCount(3)
+```
+
 - Delegate functions
 
 Called when the slider range changes.
