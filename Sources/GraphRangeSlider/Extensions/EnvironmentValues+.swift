@@ -12,4 +12,5 @@ extension EnvironmentValues {
     @Entry var toggleRadius: CGFloat = 8
     @Entry var sliderBarHeight: CGFloat = 8
     @Entry var margin: CGFloat = 0
+    @Entry var minCount = 1
 }

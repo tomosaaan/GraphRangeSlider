@@ -45,4 +45,11 @@ public extension View {
     public func margin(_ value: CGFloat) -> some View {
         environment(\.margin, max(value, 0))
     }
+
+    /// Set the minimum number that can be selected
+    ///
+    /// - Parameter value: minimum number, defaults to `1`
+    public func minCount(_ value: Int) -> some View {
+        environment(\.minCount, max(value, 1))
+    }
 }
