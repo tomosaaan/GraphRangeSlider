@@ -11,6 +11,7 @@ struct SliderToggle: View {
     @Binding var currentIndex: Int
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.toggleRadius) private var toggleRadius: CGFloat
+    @Environment(\.minCount) private var minCount: Int
 
     private var position: Position {
         limitIndex < currentIndex ? .right: .left
@@ -37,12 +38,12 @@ struct SliderToggle: View {
                         case .left:
                             let locationX = value.location.x - toggleRadius
                             if let index = togglePositions.map { abs($0 - locationX) }.argmin() {
-                                currentIndex = min(index, limitIndex - 1)
+                                currentIndex = min(index, limitIndex - minCount)
                             }
                         case .right:
                             let locationX = value.location.x + toggleRadius * 3
                             if let index = togglePositions.map { abs($0 - locationX) }.argmin() {
-                                currentIndex = max(index, limitIndex + 1)
+                                currentIndex = max(index, limitIndex + minCount)
                             }
                         }
                     }

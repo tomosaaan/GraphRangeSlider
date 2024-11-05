@@ -18,6 +18,7 @@ struct ContentView: View {
             selectedData: $selectedData
         )
         .frame(height: 300, alignment: .bottom)
+//        .minCount(3)
 //        .graph(width: .ratio(0.8), height: .fixed(50))
 //        .inactiveColor(Color.gray.opacity(0.8))
 //        .activeColor(Color.blue)
