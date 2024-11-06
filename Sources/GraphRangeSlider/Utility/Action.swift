@@ -1,6 +1,6 @@
 import Foundation
 
-final class Delegate<Input, Output> {
+final class Action<Input, Output> {
     init() {}
     private var action: ((Input) -> Output)?
 
@@ -8,7 +8,7 @@ final class Delegate<Input, Output> {
         self.action = action
     }
 
-    func call(_ input: Input) {
+    func call(_ input: Input) -> Output? {
         action?(input)
     }
 }
