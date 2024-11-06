@@ -121,6 +121,11 @@ extension GraphRangeSlider {
     public struct BarDimension {
         let width: MarkDimension
         let height: MarkDimension
+
+        public init(width: MarkDimension = .automatic, height: MarkDimension = .automatic) {
+            self.width = width
+            self.height = height
+        }
     }
 
     @MainActor
