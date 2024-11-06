@@ -89,6 +89,7 @@ You can set the minimum number that can be selected.
 ```
 
 - Dimension of the bar graph
+
 You can set the dimension of the graph.
 This setting value is equivalent to the `MarkDimension` on SwiftCharts.
 ```swift
