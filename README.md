@@ -46,14 +46,6 @@ struct ContentView: View {
 
 
 ### UI Customization
-- Width of the bar graph
-
-You can set the dimension of the graph.
-This setting value is equivalent to the `MarkDimension` on SwiftCharts.
-```swift
-.graph(width: .ratio(0.5), height: .automatic)
-```
-
 - Inactive color
 
 You can set the colors for the graph and slider when they are out of range.
@@ -94,6 +86,15 @@ You can set the margin for slider and graph.
 You can set the minimum number that can be selected.
 ```swift
 .minCount(3)
+```
+
+- Dimension of the bar graph
+You can set the dimension of the graph.
+This setting value is equivalent to the `MarkDimension` on SwiftCharts.
+```swift
+.barDimension { data in
+    .init(width: 20)
+}
 ```
 
 - Delegate functions
