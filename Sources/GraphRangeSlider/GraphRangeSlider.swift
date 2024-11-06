@@ -18,7 +18,6 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @State private var rightCurrentIndex = 0
     @State private var positions = ContiguousArray<CGFloat>()
     @State private var width = CGFloat.zero
-    @Environment(\.graphDimension) private var graphDimension: EnvironmentValues.BarDimension
     @Environment(\.activeColor) private var activeColor: Color
     @Environment(\.inactiveColor) private var inactiveColor: Color
     @Environment(\.toggleRadius) private var toggleRadius: CGFloat
@@ -30,8 +29,8 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
             BarMark(
                 x: .value(PlottableKeys.x, String(describing: data.x)),
                 y: .value(PlottableKeys.y, data.y),
-                width: graphDimension.width,
-                height: graphDimension.height
+                width: builder.barDimension.call(data)?.width ?? .automatic,
+                height: builder.barDimension.call(data)?.height ?? .automatic
             )
             .foregroundStyle(
                 by: .value(
@@ -119,10 +118,16 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
 }
 
 extension GraphRangeSlider {
+    public struct BarDimension {
+        let width: MarkDimension
+        let height: MarkDimension
+    }
+
     @MainActor
-    private final class GraphRangeSliderBuilder: GraphRangeSliderDelegate {
-        let onChanged = Delegate<Data, Void>()
-        let onEnded = Delegate<Data, Void>()
+    private final class GraphRangeSliderBuilder {
+        let onChanged = Action<Data, Void>()
+        let onEnded = Action<Data, Void>()
+        let barDimension = Action<Data.Element, BarDimension>()
     }
 
     public func onChanged(_ action: @escaping (Data) -> Void) -> Self {
@@ -132,6 +137,11 @@ extension GraphRangeSlider {
 
     public func onEnded(_ action: @escaping (Data) -> Void) -> Self {
         builder.onEnded.set(action)
+        return self
+    }
+
+    public func barDimension(_ action: @escaping (Data.Element) -> BarDimension) -> Self {
+        builder.barDimension.set(action)
         return self
     }
 }

@@ -16,14 +16,14 @@ public extension View {
         environment(\.inactiveColor, color)
     }
 
-    /// Sets the width of the bars in the graph as a percentage
-    ///
-    /// - Parameter width: Dimension representing a mark’s width, defaults to `.automatic`
-    /// - Parameter height: Dimension representing a mark’s height, defaults to `.automatic`
-    /// - Note: This setting value is equivalent to the `MarkDimension.ratio` on Swift Charts.
-    public func graph(width: MarkDimension = .automatic, height: MarkDimension = .automatic) -> some View {
-        environment(\.graphDimension, .init(width: width, height: height))
-    }
+//    /// Sets the width of the bars in the graph as a percentage
+//    ///
+//    /// - Parameter width: Dimension representing a mark’s width, defaults to `.automatic`
+//    /// - Parameter height: Dimension representing a mark’s height, defaults to `.automatic`
+//    /// - Note: This setting value is equivalent to the `MarkDimension.ratio` on Swift Charts.
+//    public func graph(width: MarkDimension = .automatic, height: MarkDimension = .automatic) -> some View {
+//        environment(\.graphDimension, .init(width: width, height: height))
+//    }
 
     /// Sets the toggle radius
     ///
