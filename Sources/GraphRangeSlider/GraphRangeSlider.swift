@@ -28,14 +28,22 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     public var body: some View {
         Group {
             if isHiddenChart {
-                if !positions.isEmpty {
-                    Slider(
-                        positions: positions,
-                        onEnded: { builder.onEnded.call(selectedData) },
-                        leftCurrentIndex: $leftCurrentIndex,
-                        rightCurrentIndex: $rightCurrentIndex
-                    )
-                    .frame(height: toggleRadius * 2)
+                Group {
+                    if !positions.isEmpty {
+                        Slider(
+                            positions: positions,
+                            onEnded: { builder.onEnded.call(selectedData) },
+                            leftCurrentIndex: $leftCurrentIndex,
+                            rightCurrentIndex: $rightCurrentIndex
+                        )
+                        .frame(height: toggleRadius * 2)
+                    }
+                }
+                .onAppear {
+                    if positions.isEmpty {
+                        updatePositions()
+                        updateIndices()
+                    }
                 }
             } else {
                 Chart(data, id: id) { data in
