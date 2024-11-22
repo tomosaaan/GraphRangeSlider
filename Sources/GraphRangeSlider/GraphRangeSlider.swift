@@ -26,26 +26,8 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.isHiddenChart) private var isHiddenChart: Bool
 
     public var body: some View {
-        Group {
-            if isHiddenChart {
-                Group {
-                    if !positions.isEmpty {
-                        Slider(
-                            positions: positions,
-                            onEnded: { builder.onEnded.call(selectedData) },
-                            leftCurrentIndex: $leftCurrentIndex,
-                            rightCurrentIndex: $rightCurrentIndex
-                        )
-                        .frame(height: toggleRadius * 2)
-                    }
-                }
-                .onAppear {
-                    if positions.isEmpty {
-                        updatePositions()
-                        updateIndices()
-                    }
-                }
-            } else {
+        VStack(spacing: margin) {
+            if !isHiddenChart {
                 Chart(data, id: id) { data in
                     BarMark(
                         x: .value(PlottableKeys.x, String(describing: data.x)),
@@ -60,8 +42,6 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                         )
                     )
                 }
-                .padding(.horizontal, toggleRadius * 2)
-                .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
                 .chartXAxis(.hidden)
                 .chartYAxis(.hidden)
                 .chartLegend(.hidden)
@@ -69,17 +49,17 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                     Status.active: activeColor,
                     Status.inactive: inactiveColor
                 ])
-                .overlay(alignment: .bottom) {
-                    if !positions.isEmpty {
-                        Slider(
-                            positions: positions,
-                            onEnded: { builder.onEnded.call(selectedData) },
-                            leftCurrentIndex: $leftCurrentIndex,
-                            rightCurrentIndex: $rightCurrentIndex
-                        )
-                        .frame(height: toggleRadius * 2)
-                    }
-                }
+                .padding(.horizontal, toggleRadius * 2)
+            }
+
+            if !positions.isEmpty {
+                Slider(
+                    positions: positions,
+                    onEnded: { builder.onEnded.call(selectedData) },
+                    leftCurrentIndex: $leftCurrentIndex,
+                    rightCurrentIndex: $rightCurrentIndex
+                )
+                .frame(height: toggleRadius * 2)
             }
         }
         .background(

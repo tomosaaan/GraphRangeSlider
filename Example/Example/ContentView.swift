@@ -17,7 +17,7 @@ struct ContentView: View {
             id: \.x,
             selectedData: $selectedData
         )
-        .hiddenChart(true)
+//        .hiddenChart(true)
 //        .frame(height: 300, alignment: .bottom)
 //        .hiddenChart(true)
 //        .minCount(3)
