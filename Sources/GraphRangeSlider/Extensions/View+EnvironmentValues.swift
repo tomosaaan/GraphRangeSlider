@@ -43,4 +43,11 @@ public extension View {
     public func minCount(_ value: Int) -> some View {
         environment(\.minCount, max(value, 1))
     }
+
+    /// Set the hidden flag for chart
+    ///
+    /// - Parameter value: frag of isHidden, defaults to `false`
+    public func hiddenChart(_ isHidden: Bool) -> some View {
+        environment(\.isHiddenChart, isHidden)
+    }
 }
