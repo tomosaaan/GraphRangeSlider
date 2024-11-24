@@ -98,6 +98,13 @@ This setting value is equivalent to the `MarkDimension` on SwiftCharts.
 }
 ```
 
+- Hidden the chart
+
+You can set the flag that chat hidden.
+```swift
+.hiddenChart(true)
+```
+
 - Delegate functions
 
 Called when the slider range changes.

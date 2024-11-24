@@ -7,7 +7,7 @@ struct Element: GraphRangeElement {
 }
 
 struct ContentView: View {
-    let data: [Element] = (1...50).map { .init(x: $0 * 10, y: $0 * 10) }
+    let data: [Element] = (1...5).map { .init(x: $0 * 10, y: $0 * 10) }
 
     @State var selectedData = [Element]()
 
@@ -17,7 +17,9 @@ struct ContentView: View {
             id: \.x,
             selectedData: $selectedData
         )
-        .frame(height: 300, alignment: .bottom)
+//        .hiddenChart(true)
+//        .frame(height: 300, alignment: .bottom)
+//        .hiddenChart(true)
 //        .minCount(3)
 //        .graph(width: .ratio(0.8), height: .fixed(50))
 //        .inactiveColor(Color.gray.opacity(0.8))

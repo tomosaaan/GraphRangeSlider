@@ -23,35 +23,35 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.toggleRadius) private var toggleRadius: CGFloat
     @Environment(\.sliderBarHeight) private var sliderBarHeight: CGFloat
     @Environment(\.margin) private var margin: CGFloat
+    @Environment(\.isHiddenChart) private var isHiddenChart: Bool
 
     public var body: some View {
-        Chart(data, id: id) { data in
-            BarMark(
-                x: .value(PlottableKeys.x, String(describing: data.x)),
-                y: .value(PlottableKeys.y, data.y),
-                width: builder.barDimension.call(data)?.width ?? .automatic,
-                height: builder.barDimension.call(data)?.height ?? .automatic
-            )
-            .foregroundStyle(
-                by: .value(
-                    PlottableKeys.status,
-                    selectedData.contains(data) ? Status.active: Status.inactive
-                )
-            )
-        }
-        .padding(.horizontal, toggleRadius * 2)
-        .padding(.bottom, toggleRadius + sliderBarHeight / 2 + margin)
-        .chartXAxis(.hidden)
-        .chartYAxis(.hidden)
-        .chartLegend(.hidden)
-        .chartForegroundStyleScale([
-            Status.active: activeColor,
-            Status.inactive: inactiveColor
-        ])
-        .background(
-            Color.clear.viewSize { width = $0.width }
-        )
-        .overlay(alignment: .bottom) {
+        VStack(spacing: margin) {
+            if !isHiddenChart {
+                Chart(data, id: id) { data in
+                    BarMark(
+                        x: .value(PlottableKeys.x, String(describing: data.x)),
+                        y: .value(PlottableKeys.y, data.y),
+                        width: builder.barDimension.call(data)?.width ?? .automatic,
+                        height: builder.barDimension.call(data)?.height ?? .automatic
+                    )
+                    .foregroundStyle(
+                        by: .value(
+                            PlottableKeys.status,
+                            selectedData.contains(data) ? Status.active: Status.inactive
+                        )
+                    )
+                }
+                .chartXAxis(.hidden)
+                .chartYAxis(.hidden)
+                .chartLegend(.hidden)
+                .chartForegroundStyleScale([
+                    Status.active: activeColor,
+                    Status.inactive: inactiveColor
+                ])
+                .padding(.horizontal, toggleRadius * 2)
+            }
+
             if !positions.isEmpty {
                 Slider(
                     positions: positions,
@@ -62,6 +62,9 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                 .frame(height: toggleRadius * 2)
             }
         }
+        .background(
+            Color.clear.viewSize { width = $0.width }
+        )
         .onChange(of: leftCurrentIndex) { _ in
             onChangedSelectedData()
         }

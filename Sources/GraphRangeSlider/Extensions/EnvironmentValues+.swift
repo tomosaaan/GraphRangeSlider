@@ -8,4 +8,5 @@ extension EnvironmentValues {
     @Entry var sliderBarHeight: CGFloat = 8
     @Entry var margin: CGFloat = 0
     @Entry var minCount = 1
+    @Entry var isHiddenChart = false
 }
