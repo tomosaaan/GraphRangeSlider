@@ -26,7 +26,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
     @Environment(\.isHiddenChart) private var isHiddenChart: Bool
 
     public var body: some View {
-        VStack(spacing: margin) {
+        ZStack(alignment: .bottom) {
             if !isHiddenChart {
                 Chart(data, id: id) { data in
                     BarMark(
@@ -50,6 +50,7 @@ public struct GraphRangeSlider<Data, ID>: View where Data: RandomAccessCollectio
                     Status.inactive: inactiveColor
                 ])
                 .padding(.horizontal, toggleRadius * 2)
+                .padding(.bottom, margin + toggleRadius + sliderBarHeight / 2)
             }
 
             if !positions.isEmpty {
